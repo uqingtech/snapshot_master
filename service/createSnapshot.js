@@ -8,23 +8,19 @@ process.on('message', async (m) => {
     const browser = await puppeteer.launch();
     try {
         const page = await browser.newPage();
-        page.setExtraHTTPHeaders({
-            'Accept-Charset': 'utf-8',
-            'Content-Type': 'text/html; charset=utf-8',
-        });
-        const response = await page.goto(m.url, {
+        await page.goto(m.url, {
             timeout: 120000,
             waitUntil: 'networkidle0'
         });
-        let resData = (await response.buffer()).toString('utf8');
-        console.log(resData);
-        await page.setContent(resData);
         const height = await page.$$eval('body', el => el[0].scrollHeight);
         await page.setViewport({
             width: 800,
             height: height
         });
-        await page.setContent((await response.buffer()).toString('utf8'));
+        await page.goto(m.url, {
+            timeout: 120000,
+            waitUntil: 'networkidle0'
+        });
         await page.screenshot({
             path: `${imgUrl}/${m.fileName}`,
             type: 'png',
