@@ -52,8 +52,6 @@ glob(__dirname + '/controller/*.js').then((controllers) => {
 });
 //处理静态资源
 if (process.env.NODE_ENV === 'dev') {
-    const cacheDir = `${config_1.default.STATIC.dir}/${config_1.default.DIR.cacheDir}`;
-    const fileDir = `${config_1.default.STATIC.dir}/${config_1.default.DIR.fileDir}`;
     Promise.all([
         //复制view
         fs.copy(`${path.join(__dirname, `../src/views`)}`, `${__dirname}/views`, {
@@ -63,16 +61,24 @@ if (process.env.NODE_ENV === 'dev') {
         fs.copy(`${path.join(__dirname, `../package.json`)}`, `${__dirname}/package.json`, {
             overwrite: true,
             errorOnExist: false
-        }),
-        //创建缓存目录
-        fs.ensureDir(cacheDir),
-        fs.ensureDir(fileDir)
+        })
     ]).then((data) => {
         console.log('静态资源复制成功------>');
     }).catch((error) => {
         console.log(error);
     });
 }
+//创建缓存目录
+const cacheDir = `${config_1.default.STATIC.dir}/${config_1.default.DIR.cacheDir}`;
+const fileDir = `${config_1.default.STATIC.dir}/${config_1.default.DIR.fileDir}`;
+Promise.all([
+    fs.ensureDir(cacheDir),
+    fs.ensureDir(fileDir)
+]).then((data) => {
+    console.log('静态目录创建成功------>');
+}).catch((err) => {
+    console.log(err);
+});
 //配置数据库连接池
 // error-handling
 app.on('error', (err, ctx) => {
