@@ -21,7 +21,7 @@ exports.default = {
         fileDir: 'files'
     },
     STATIC: {
-        prefix: '/static',
+        prefix: '/snapshot/static',
         dir: path.join(__dirname, 'public')
     },
     VIEW: {
