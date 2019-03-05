@@ -16,7 +16,9 @@ process.on('message', async (m) => {
             timeout: 120000,
             waitUntil: 'networkidle0'
         });
-        await page.setContent((await response.buffer()).toString('utf8'));
+        let resData = (await response.buffer()).toString('utf8');
+        console.log(resData);
+        await page.setContent(resData);
         const height = await page.$$eval('body', el => el[0].scrollHeight);
         await page.setViewport({
             width: 800,
