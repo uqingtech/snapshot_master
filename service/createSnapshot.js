@@ -12,19 +12,17 @@ process.on('message', async (m) => {
             'Accept-Charset': 'utf-8',
             'Content-Type': 'text/html; charset=utf-8',
         });
-        await page.goto(m.url, {
+        const response = await page.goto(m.url, {
             timeout: 120000,
             waitUntil: 'networkidle0'
         });
+        await page.setContent((await response.buffer()).toString('utf8'));
         const height = await page.$$eval('body', el => el[0].scrollHeight);
         await page.setViewport({
             width: 800,
             height: height
         });
-        await page.goto(m.url, {
-            timeout: 120000,
-            waitUntil: 'networkidle0'
-        });
+        await page.setContent((await response.buffer()).toString('utf8'));
         await page.screenshot({
             path: `${imgUrl}/${m.fileName}`,
             type: 'png',
