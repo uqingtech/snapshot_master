@@ -38,5 +38,6 @@ process.on('message', async (m) => {
         });
     }
     await browser.close();
+    process.exit(0);
 });
 //# sourceMappingURL=createSnapshot.js.map
