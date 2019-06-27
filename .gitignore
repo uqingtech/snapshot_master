@@ -63,3 +63,4 @@ typings/
 .idea
 dist
 public
+.DS_Store
