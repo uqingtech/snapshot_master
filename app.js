@@ -7,15 +7,16 @@ const views = require("koa-views");
 const json = require("koa-json");
 const bodyparser = require("koa-bodyparser");
 const logger = require("koa-logger");
-const path = require("path");
 // @ts-ignore
 const onerror = require("koa-onerror");
 const koaStatic = require("koa-static");
 const koaMount = require("koa-mount");
 const util = require("util");
 const Glob = require("glob");
-const fs = require("fs-extra");
 const config_1 = require("./config");
+const sequelize_1 = require("./sequelize");
+const task_1 = require("./task");
+const responseMessage_1 = require("./lib/responseMessage");
 const glob = util.promisify(Glob);
 // error handler
 onerror(app);
@@ -52,34 +53,14 @@ glob(__dirname + '/controller/*.js').then((controllers) => {
 });
 //处理静态资源
 if (process.env.NODE_ENV === 'dev') {
-    Promise.all([
-        //复制view
-        fs.copy(`${path.join(__dirname, `../src/views`)}`, `${__dirname}/views`, {
-            overwrite: true,
-            errorOnExist: false
-        }),
-        fs.copy(`${path.join(__dirname, `../package.json`)}`, `${__dirname}/package.json`, {
-            overwrite: true,
-            errorOnExist: false
-        })
-    ]).then((data) => {
-        console.log('静态资源复制成功------>');
-    }).catch((error) => {
-        console.log(error);
-    });
+    task_1.copyStaticResource();
+    task_1.createStaticDir();
 }
-//创建缓存目录
-const cacheDir = `${config_1.default.STATIC.dir}/${config_1.default.DIR.cacheDir}`;
-const fileDir = `${config_1.default.STATIC.dir}/${config_1.default.DIR.fileDir}`;
-Promise.all([
-    fs.ensureDir(cacheDir),
-    fs.ensureDir(fileDir)
-]).then((data) => {
-    console.log('静态目录创建成功------>');
-}).catch((err) => {
-    console.log(err);
-});
+//挂载消息返回处理
+const responseMessage = new responseMessage_1.default();
+Object.assign(app, { responseMessage });
 //配置数据库连接池
+Object.assign(app, { sequelize: sequelize_1.default });
 // error-handling
 app.on('error', (err, ctx) => {
     console.error('server error', err, ctx);
