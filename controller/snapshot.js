@@ -36,7 +36,22 @@ function default_1(app) {
                         'id': key,
                         'snap_url': url,
                         'file_name': fileName,
-                        'preview_url': `${config_1.default.DOMAIN}${config_1.default.STATIC.prefix}/${config_1.default.DIR.cacheDir}/${fileName}`
+                        'preview_url': `${config_1.default.DOMAIN}${config_1.default.STATIC.prefix}/${config_1.default.DIR.cacheDir}/${fileName}`,
+                        'img_flag': 0
+                    });
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            }
+            else {
+                try {
+                    await snapshotService.createSnapshot({
+                        'id': key,
+                        'snap_url': url,
+                        'file_name': fileName,
+                        'preview_url': `${config_1.default.DOMAIN}${config_1.default.STATIC.prefix}/${config_1.default.DIR.cacheDir}/${fileName}`,
+                        'img_flag': 1
                     });
                 }
                 catch (e) {
@@ -44,6 +59,7 @@ function default_1(app) {
                 }
             }
         });
+        console.log("创建截图....");
         p.send({
             url: url,
             fileName: fileName
@@ -58,20 +74,38 @@ function default_1(app) {
             let result = await snapshotService.getSnapshot(key);
             result = JSON.parse(JSON.stringify(result));
             if (result) {
-                ctx.response.body = app.responseMessage.successMessage({
-                    url: result.preview_url
-                });
+                //生成失败
+                if (result.img_flag === 1) {
+                    ctx.response.body = app.responseMessage.errorMessage({
+                        errCode: 2,
+                        msg: '截图生成失败，请确保网址正确！'
+                    });
+                }
+                //这是一个feature
+                //被清理
+                else if (result.img_flag === 2) {
+                    ctx.response.body = app.responseMessage.errorMessage({
+                        errCode: 3,
+                        msg: '截图已被过期清理！'
+                    });
+                }
+                //正常生成
+                else {
+                    ctx.response.body = app.responseMessage.successMessage({
+                        url: result.preview_url
+                    });
+                }
             }
             else {
                 ctx.response.body = app.responseMessage.errorMessage({
-                    msg: "图片已失效"
+                    msg: "未找到图片"
                 });
             }
         }
         catch (err) {
             console.log(err);
             ctx.response.body = app.responseMessage.errorMessage({
-                msg: "图片已失效"
+                msg: "未找到图片"
             });
         }
     });

@@ -47,6 +47,14 @@ __decorate([
     __metadata("design:type", String)
 ], Image.prototype, "file_name", void 0);
 __decorate([
+    sequelize_typescript_1.Column({
+        type: sequelize_typescript_1.DataType.INTEGER(1),
+        allowNull: true,
+        comment: "截图戳 0 - 生成完毕 1 - 生成失败 2 - 已被清理"
+    }),
+    __metadata("design:type", String)
+], Image.prototype, "img_flag", void 0);
+__decorate([
     sequelize_typescript_1.CreatedAt,
     __metadata("design:type", Date)
 ], Image.prototype, "create_time", void 0);
