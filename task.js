@@ -39,6 +39,7 @@ exports.copyStaticResource = copyStaticResource;
 function clearStaticResource() {
     schedule.scheduleJob('0 0 0 * * *', () => {
         fs.emptyDir(`${config_1.default.STATIC.dir}/${config_1.default.DIR.cacheDir}`, () => {
+            console.log(new Date());
             console.log("文件夹清空成功...");
         });
     });
