@@ -19,6 +19,8 @@ function default_1(app) {
     router.post('/getSnapshot', async (ctx, next) => {
         // console.log()
         let url = ctx.request.body.url;
+        let width = parseInt(ctx.request.body.width, 10);
+        let isMobile = ctx.request.body.isMobile;
         if (!url) {
             ctx.response.body = app.responseMessage.successMessage({
                 msg: 'url不能为空',
@@ -62,7 +64,9 @@ function default_1(app) {
         console.log("创建截图....");
         p.send({
             url: url,
-            fileName: fileName
+            fileName: fileName,
+            width: width,
+            isMobile: !!isMobile
         });
         ctx.response.body = app.responseMessage.successMessage({
             key: key
