@@ -1,1 +1,15 @@
-"use strict";var _interopRequireDefault=require("@babel/runtime/helpers/interopRequireDefault"),_regenerator=_interopRequireDefault(require("@babel/runtime/regenerator"));Object.defineProperty(exports,"__esModule",{value:!0});var Router=require("koa-router"),router=new Router;function default_1(e){e.use(router.routes(),router.allowedMethods())}router.prefix("/snapshot/index"),router.get("/",function(r){return _regenerator.default.async(function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,_regenerator.default.awrap(r.render("index",{title:"Hello Koa 2!"}));case 2:case"end":return e.stop()}})}),exports.default=default_1;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const Router = require("koa-router");
+const router = new Router();
+router.prefix('/snapshot/index');
+router.get('/', async (ctx, next) => {
+    await ctx.render('index', {
+        title: 'Hello Koa 2!'
+    });
+});
+function default_1(app) {
+    app.use(router.routes(), router.allowedMethods());
+}
+exports.default = default_1;
+//# sourceMappingURL=index.js.map

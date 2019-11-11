@@ -1,1 +1,77 @@
-"use strict";var _interopRequireDefault=require("@babel/runtime/helpers/interopRequireDefault"),_classCallCheck2=_interopRequireDefault(require("@babel/runtime/helpers/classCallCheck")),_possibleConstructorReturn2=_interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn")),_getPrototypeOf2=_interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf")),_inherits2=_interopRequireDefault(require("@babel/runtime/helpers/inherits")),_typeof2=_interopRequireDefault(require("@babel/runtime/helpers/typeof")),__decorate=function(e,t,r,a){var i,p=arguments.length,l=p<3?t:null===a?a=Object.getOwnPropertyDescriptor(t,r):a;if("object"===("undefined"==typeof Reflect?"undefined":(0,_typeof2.default)(Reflect))&&"function"==typeof Reflect.decorate)l=Reflect.decorate(e,t,r,a);else for(var o=e.length-1;0<=o;o--)(i=e[o])&&(l=(p<3?i(l):3<p?i(t,r,l):i(t,r))||l);return 3<p&&l&&Object.defineProperty(t,r,l),l},__metadata=function(e,t){if("object"===("undefined"==typeof Reflect?"undefined":(0,_typeof2.default)(Reflect))&&"function"==typeof Reflect.metadata)return Reflect.metadata(e,t)};Object.defineProperty(exports,"__esModule",{value:!0});var sequelize_typescript_1=require("sequelize-typescript"),Image=function(e){function t(){return(0,_classCallCheck2.default)(this,t),(0,_possibleConstructorReturn2.default)(this,(0,_getPrototypeOf2.default)(t).apply(this,arguments))}return(0,_inherits2.default)(t,e),t}(sequelize_typescript_1.Model);__decorate([sequelize_typescript_1.Column({type:sequelize_typescript_1.DataType.STRING(50),allowNull:!1,defaultValue:"",primaryKey:!0,comment:"图片id"}),__metadata("design:type",String)],Image.prototype,"id",void 0),__decorate([sequelize_typescript_1.Column({type:sequelize_typescript_1.DataType.STRING(500),allowNull:!0,comment:"地址"}),__metadata("design:type",String)],Image.prototype,"snap_url",void 0),__decorate([sequelize_typescript_1.Column({type:sequelize_typescript_1.DataType.STRING(500),allowNull:!0,comment:"预览地址"}),__metadata("design:type",String)],Image.prototype,"preview_url",void 0),__decorate([sequelize_typescript_1.Column({type:sequelize_typescript_1.DataType.STRING(500),allowNull:!0,comment:"文件名"}),__metadata("design:type",String)],Image.prototype,"file_name",void 0),__decorate([sequelize_typescript_1.Column({type:sequelize_typescript_1.DataType.INTEGER(1),allowNull:!0,comment:"截图戳 0 - 生成完毕 1 - 生成失败 2 - 已被清理"}),__metadata("design:type",String)],Image.prototype,"img_flag",void 0),__decorate([sequelize_typescript_1.CreatedAt,__metadata("design:type",Date)],Image.prototype,"create_time",void 0),__decorate([sequelize_typescript_1.UpdatedAt,__metadata("design:type",Date)],Image.prototype,"update_time",void 0),__decorate([sequelize_typescript_1.DeletedAt,__metadata("design:type",Date)],Image.prototype,"delete_time",void 0),Image=__decorate([sequelize_typescript_1.Table({tableName:"snap_image",paranoid:!0,freezeTableName:!0})],Image),exports.default=Image;
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const sequelize_typescript_1 = require("sequelize-typescript");
+let Image = class Image extends sequelize_typescript_1.Model {
+};
+__decorate([
+    sequelize_typescript_1.Column({
+        type: sequelize_typescript_1.DataType.STRING(50),
+        allowNull: false,
+        defaultValue: '',
+        primaryKey: true,
+        comment: "图片id"
+    }),
+    __metadata("design:type", String)
+], Image.prototype, "id", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        type: sequelize_typescript_1.DataType.STRING(500),
+        allowNull: true,
+        comment: "地址"
+    }),
+    __metadata("design:type", String)
+], Image.prototype, "snap_url", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        type: sequelize_typescript_1.DataType.STRING(500),
+        allowNull: true,
+        comment: "预览地址"
+    }),
+    __metadata("design:type", String)
+], Image.prototype, "preview_url", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        type: sequelize_typescript_1.DataType.STRING(500),
+        allowNull: true,
+        comment: "文件名"
+    }),
+    __metadata("design:type", String)
+], Image.prototype, "file_name", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        type: sequelize_typescript_1.DataType.INTEGER(1),
+        allowNull: true,
+        comment: "截图戳 0 - 生成完毕 1 - 生成失败 2 - 已被清理"
+    }),
+    __metadata("design:type", String)
+], Image.prototype, "img_flag", void 0);
+__decorate([
+    sequelize_typescript_1.CreatedAt,
+    __metadata("design:type", Date)
+], Image.prototype, "create_time", void 0);
+__decorate([
+    sequelize_typescript_1.UpdatedAt,
+    __metadata("design:type", Date)
+], Image.prototype, "update_time", void 0);
+__decorate([
+    sequelize_typescript_1.DeletedAt,
+    __metadata("design:type", Date)
+], Image.prototype, "delete_time", void 0);
+Image = __decorate([
+    sequelize_typescript_1.Table({
+        tableName: 'snap_image',
+        paranoid: true,
+        freezeTableName: true
+    })
+], Image);
+exports.default = Image;
+//# sourceMappingURL=snapshot.model.js.map

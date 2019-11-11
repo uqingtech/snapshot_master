@@ -1,1 +1,51 @@
-"use strict";var _interopRequireDefault=require("@babel/runtime/helpers/interopRequireDefault"),_regenerator=_interopRequireDefault(require("@babel/runtime/regenerator"));Object.defineProperty(exports,"__esModule",{value:!0});var puppeteer=require("puppeteer"),config_1=require("../config"),imgUrl="".concat(config_1.default.STATIC.dir,"/").concat(config_1.default.DIR.cacheDir);process.on("message",function(r){var t,a,n;return _regenerator.default.async(function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=3,_regenerator.default.awrap(puppeteer.launch());case 3:return t=e.sent,e.prev=4,e.next=7,_regenerator.default.awrap(t.newPage());case 7:return a=e.sent,e.next=10,_regenerator.default.awrap(a.setViewport({width:r.width||375,height:812,deviceScaleFactor:2,isMobile:r.isMobile}));case 10:return e.next=12,_regenerator.default.awrap(a.setUserAgent(r.userAgent));case 12:return e.next=14,_regenerator.default.awrap(a.goto(r.url,{timeout:12e4,waitUntil:"networkidle0"}));case 14:return e.next=16,_regenerator.default.awrap(a.$$eval("body",function(e){return e[0].scrollHeight}));case 16:return n=e.sent,e.next=19,_regenerator.default.awrap(a.setViewport({width:r.width||375,height:n,deviceScaleFactor:2,isMobile:r.isMobile}));case 19:return e.next=21,_regenerator.default.awrap(a.goto(r.url,{timeout:12e4,waitUntil:"networkidle0"}));case 21:return e.next=23,_regenerator.default.awrap(a.screenshot({path:"".concat(imgUrl,"/").concat(r.fileName),type:"png",fullPage:!0}));case 23:process.send({flag:!0}),e.next=30;break;case 26:e.prev=26,e.t0=e.catch(4),process.send({flag:!1,err:e.t0});case 30:return e.next=32,_regenerator.default.awrap(t.close());case 32:case"end":return e.stop()}},null,null,[[4,26]])});
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const puppeteer = require("puppeteer");
+const config_1 = require("../config");
+const imgUrl = `${config_1.default.STATIC.dir}/${config_1.default.DIR.cacheDir}`;
+process.on('message', async (m) => {
+    console.log(m);
+    const browser = await puppeteer.launch();
+    try {
+        const page = await browser.newPage();
+        await page.setViewport({
+            width: m.width || 375,
+            height: 812,
+            deviceScaleFactor: 2,
+            isMobile: m.isMobile
+        });
+        await page.setUserAgent(m.userAgent);
+        await page.goto(m.url, {
+            timeout: 120000,
+            waitUntil: 'networkidle0'
+        });
+        const height = await page.$$eval('body', el => el[0].scrollHeight);
+        await page.setViewport({
+            width: m.width || 375,
+            height: height,
+            deviceScaleFactor: 2,
+            isMobile: m.isMobile
+        });
+        await page.goto(m.url, {
+            timeout: 120000,
+            waitUntil: 'networkidle0'
+        });
+        await page.screenshot({
+            path: `${imgUrl}/${m.fileName}`,
+            type: 'png',
+            fullPage: true,
+        });
+        process.send({
+            flag: true
+        });
+    }
+    catch (err) {
+        console.log(err);
+        process.send({
+            flag: false,
+            err: err
+        });
+    }
+    await browser.close();
+});
+//# sourceMappingURL=createSnapshot.js.map
