@@ -9,6 +9,11 @@ const snapshot_service_1 = require("../service/snapshot.service");
 const createSnapshot = path.join(__dirname, '../process/createSnapshot');
 const router = new Router();
 router.prefix('/snapshot');
+// let pidArr:any = {}
+//
+// setInterval(()=>{
+//   console.log(pidArr)
+// },1000)
 function default_1(app) {
     const snapshotService = new snapshot_service_1.default(app);
     router.get('/', async (ctx, next) => {
@@ -30,6 +35,7 @@ function default_1(app) {
             return false;
         }
         let p = child.fork(createSnapshot, [], {});
+        // pidArr[p.pid] = +new Date()
         let key = uuidv1();
         const fileName = `image${+new Date() + Math.floor(Math.random() * 100000)}.png`;
         p.on('message', async (m) => {

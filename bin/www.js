@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 "use strict";
-/**
- * Module dependencies.
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = require("../app");
 const Debug = require("debug");

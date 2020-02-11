@@ -4,6 +4,14 @@ const puppeteer = require("puppeteer");
 const config_1 = require("../config");
 const imgUrl = `${config_1.default.STATIC.dir}/${config_1.default.DIR.cacheDir}`;
 process.on('message', async (m) => {
+    setTimeout(() => {
+        //300秒后进程自动释放
+        process.send({
+            flag: false,
+            err: 'err'
+        });
+        process.exit(0);
+    }, 300000);
     console.log(m);
     const browser = await puppeteer.launch();
     try {
@@ -38,6 +46,7 @@ process.on('message', async (m) => {
         process.send({
             flag: true
         });
+        process.exit(0);
     }
     catch (err) {
         console.log(err);
@@ -45,6 +54,7 @@ process.on('message', async (m) => {
             flag: false,
             err: err
         });
+        process.exit(0);
     }
     await browser.close();
 });
