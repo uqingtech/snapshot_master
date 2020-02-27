@@ -55,6 +55,14 @@ __decorate([
     __metadata("design:type", String)
 ], Image.prototype, "img_flag", void 0);
 __decorate([
+    sequelize_typescript_1.Column({
+        type: sequelize_typescript_1.DataType.STRING(1000),
+        allowNull: true,
+        comment: "用户信息"
+    }),
+    __metadata("design:type", String)
+], Image.prototype, "user_data", void 0);
+__decorate([
     sequelize_typescript_1.CreatedAt,
     __metadata("design:type", Date)
 ], Image.prototype, "create_time", void 0);

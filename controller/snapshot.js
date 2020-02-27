@@ -27,6 +27,7 @@ function default_1(app) {
         let width = parseInt(ctx.request.body.width, 10);
         let isMobile = ctx.request.body.isMobile;
         let userAgent = ctx.request.body.userAgent;
+        let userData = ctx.request.body.userData || "";
         if (!url) {
             ctx.response.body = app.responseMessage.successMessage({
                 msg: 'url不能为空',
@@ -46,7 +47,8 @@ function default_1(app) {
                         'snap_url': url,
                         'file_name': fileName,
                         'preview_url': `${config_1.default.DOMAIN}${config_1.default.STATIC.prefix}/${config_1.default.DIR.cacheDir}/${fileName}`,
-                        'img_flag': 0
+                        'img_flag': 0,
+                        'user_data': userData
                     });
                 }
                 catch (e) {
@@ -60,7 +62,8 @@ function default_1(app) {
                         'snap_url': url,
                         'file_name': fileName,
                         'preview_url': `${config_1.default.DOMAIN}${config_1.default.STATIC.prefix}/${config_1.default.DIR.cacheDir}/${fileName}`,
-                        'img_flag': 1
+                        'img_flag': 1,
+                        'user_data': userData
                     });
                 }
                 catch (e) {
