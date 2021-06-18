@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= title %></title>
+</head>
+<body>
+<!--<h1>截屏工具V1.0 简陋版</h1>-->
+<!--<h4>阿C出品</h4>-->
+<div>
+    <input id="shotUrl" type="text" value="http://www.baidu.com" placeholder="请输入快照的网址">
+    <button onclick="shot(document.getElementById('shotUrl').value)">生成快照</button>
+</div>
+
+<div id="preview">
+
+</div>
+
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script>
+  let snapCheck = false
+  let postCount = 0
+
+  function shot(url) {
+    if (snapCheck) {
+      // alert("请不要频繁点击！")
+      // return false
+    }
+    snapCheck = true
+    $("#preview").empty()
+    $("#preview").html('截屏生成中...')
+    if (url.indexOf('http://') || url.indexOf('https://')) {
+      sendAjax('/snapshot/getSnapshot', 'POST', 'json', {
+          url: url,
+          width:1920,
+          userAgent:`Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36`
+      }).done(function (data) {
+        if (!data.errCode) {
+          getImgUrl(data.key)
+        } else {
+          alert("请求失败！")
+          snapCheck = false
+          $("#preview").empty()
+        }
+      }).fail(function (err) {
+        alert("请求失败！")
+        snapCheck = false
+        $("#preview").empty()
+      })
+    }
+  }
+
+  function getImgUrl(key) {
+    sendAjax('/snapshot/getSnapshotImg', 'POST', 'json', {key: key}).done(function (data) {
+      if (!data.errCode) {
+        snapCheck = false
+        $("#preview").empty()
+        $("#preview").append('<span>截图下载地址(24小时有效):</span><a href="' + data.url + '" download="' + +new Date() + '.png">' + data.url + '</a>')
+      } else {
+        if (data.err) {
+          alert("截图生成失败！请重试！")
+          snapCheck = false
+          $("#preview").empty()
+        }
+        if(data.errCode === 2){
+          alert("截图生成失败，请确保网址正确！")
+          snapCheck = false
+          $("#preview").empty()
+        }
+        else if(data.errCode === 3){
+          alert("截图已被过期清理！")
+          snapCheck = false
+          $("#preview").empty()
+        }
+        else{
+          postCount++
+          if (postCount > 30) {
+            snapCheck = false
+            postCount = 0
+            $("#preview").empty()
+            // alert("请求超时")
+          } else {
+            setTimeout(() => {
+              getImgUrl(key)
+            }, 3000)
+          }
+        }
+      }
+    }).fail(function (err) {
+      alert("请求失败，请重试！")
+      snapCheck = false
+      $("#preview").empty()
+    })
+  }
+
+  function sendAjax(url, type, dataType, data) {
+    return $.ajax({
+      url: url,
+      type: type,
+      dataType: dataType,
+      data: data
+    })
+  }
+</script>
+</html>
