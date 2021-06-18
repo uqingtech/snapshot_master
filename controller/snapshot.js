@@ -1,1 +1,130 @@
-"use strict";var _interopRequireDefault=require("@babel/runtime/helpers/interopRequireDefault"),_regenerator=_interopRequireDefault(require("@babel/runtime/regenerator")),_asyncToGenerator2=_interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));Object.defineProperty(exports,"__esModule",{value:!0});var Router=require("koa-router"),child=require("child_process"),path=require("path"),uuidv1=require("uuid/v1"),config_1=require("../config"),snapshot_service_1=require("../service/snapshot.service"),createSnapshot=path.join(__dirname,"../process/createSnapshot"),router=new Router;function default_1(l){var f=new snapshot_service_1.default(l);router.get("/",function(){var t=(0,_asyncToGenerator2.default)(_regenerator.default.mark(function e(r,t){return _regenerator.default.wrap(function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,r.render("snapshot",{title:"截屏工具 V1.0"});case 2:case"end":return e.stop()}},e)}));return function(e,r){return t.apply(this,arguments)}}()),router.post("/getSnapshot",function(){var t=(0,_asyncToGenerator2.default)(_regenerator.default.mark(function e(r,t){var a,n,s,o,u,c,i,p;return _regenerator.default.wrap(function(e){for(;;)switch(e.prev=e.next){case 0:if(a=r.request.body.url,n=parseInt(r.request.body.width,10),s=r.request.body.isMobile,o=r.request.body.userAgent,u=r.request.body.userData||"",a){e.next=8;break}return r.response.body=l.responseMessage.successMessage({msg:"url不能为空",key:null}),e.abrupt("return",!1);case 8:c=child.fork(createSnapshot,[],{}),i=uuidv1(),p="image".concat(+new Date+Math.floor(1e5*Math.random()),".png"),c.on("message",function(){var r=(0,_asyncToGenerator2.default)(_regenerator.default.mark(function e(r){return _regenerator.default.wrap(function(e){for(;;)switch(e.prev=e.next){case 0:if(r.flag)return e.prev=1,e.next=4,f.createSnapshot({id:i,snap_url:a,file_name:p,preview_url:"".concat(config_1.default.DOMAIN).concat(config_1.default.STATIC.prefix,"/").concat(config_1.default.DIR.cacheDir,"/").concat(p),img_flag:0,user_data:u});e.next=11;break;case 4:e.next=9;break;case 6:e.prev=6,e.t0=e.catch(1);case 9:e.next=19;break;case 11:return e.prev=11,e.next=14,f.createSnapshot({id:i,snap_url:a,file_name:p,preview_url:"".concat(config_1.default.DOMAIN).concat(config_1.default.STATIC.prefix,"/").concat(config_1.default.DIR.cacheDir,"/").concat(p),img_flag:1,user_data:u});case 14:e.next=19;break;case 16:e.prev=16,e.t1=e.catch(11);case 19:case"end":return e.stop()}},e,null,[[1,6],[11,16]])}));return function(e){return r.apply(this,arguments)}}()),c.send({url:a,fileName:p,width:n,isMobile:!!s,userAgent:o||"Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1"}),r.response.body=l.responseMessage.successMessage({key:i});case 15:case"end":return e.stop()}},e)}));return function(e,r){return t.apply(this,arguments)}}()),router.post("/getSnapshotImg",function(){var t=(0,_asyncToGenerator2.default)(_regenerator.default.mark(function e(r,t){var a;return _regenerator.default.wrap(function(e){for(;;)switch(e.prev=e.next){case 0:return a=r.request.body.key,e.prev=1,e.next=4,f.getSnapshot(a);case 4:a=e.sent,(a=JSON.parse(JSON.stringify(a)))?1===a.img_flag?r.response.body=l.responseMessage.errorMessage({errCode:2,msg:"截图生成失败，请确保网址正确！"}):2===a.img_flag?r.response.body=l.responseMessage.errorMessage({errCode:3,msg:"截图已被过期清理！"}):r.response.body=l.responseMessage.successMessage({url:a.preview_url}):r.response.body=l.responseMessage.errorMessage({msg:"未找到图片"}),e.next=13;break;case 9:e.prev=9,e.t0=e.catch(1),r.response.body=l.responseMessage.errorMessage({msg:"未找到图片"});case 13:case"end":return e.stop()}},e,null,[[1,9]])}));return function(e,r){return t.apply(this,arguments)}}()),l.use(router.routes(),router.allowedMethods())}router.prefix("/snapshot"),exports.default=default_1;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const Router = require("koa-router");
+const child = require("child_process");
+const path = require("path");
+const uuidv1 = require("uuid/v1");
+const config_1 = require("../config");
+const snapshot_service_1 = require("../service/snapshot.service");
+const createSnapshot = path.join(__dirname, '../process/createSnapshot');
+const router = new Router();
+router.prefix('/snapshot');
+// let pidArr:any = {}
+//
+// setInterval(()=>{
+//   console.log(pidArr)
+// },1000)
+function default_1(app) {
+    const snapshotService = new snapshot_service_1.default(app);
+    router.get('/', async (ctx, next) => {
+        await ctx.render('snapshot', {
+            title: '截屏工具 V1.0'
+        });
+    });
+    router.post('/getSnapshot', async (ctx, next) => {
+        // console.log()
+        let url = ctx.request.body.url;
+        let width = parseInt(ctx.request.body.width, 10);
+        let isMobile = ctx.request.body.isMobile;
+        let userAgent = ctx.request.body.userAgent;
+        let userData = ctx.request.body.userData || "";
+        if (!url) {
+            ctx.response.body = app.responseMessage.successMessage({
+                msg: 'url不能为空',
+                key: null
+            });
+            return false;
+        }
+        let p = child.fork(createSnapshot, [], {});
+        // pidArr[p.pid] = +new Date()
+        let key = uuidv1();
+        const fileName = `image${+new Date() + Math.floor(Math.random() * 100000)}.png`;
+        p.on('message', async (m) => {
+            if (m.flag) {
+                try {
+                    await snapshotService.createSnapshot({
+                        'id': key,
+                        'snap_url': url,
+                        'file_name': fileName,
+                        'preview_url': `${config_1.default.DOMAIN}${config_1.default.STATIC.prefix}/${config_1.default.DIR.cacheDir}/${fileName}`,
+                        'img_flag': 0,
+                        'user_data': userData
+                    });
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            }
+            else {
+                try {
+                    await snapshotService.createSnapshot({
+                        'id': key,
+                        'snap_url': url,
+                        'file_name': fileName,
+                        'preview_url': `${config_1.default.DOMAIN}${config_1.default.STATIC.prefix}/${config_1.default.DIR.cacheDir}/${fileName}`,
+                        'img_flag': 1,
+                        'user_data': userData
+                    });
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            }
+        });
+        console.log("创建截图....");
+        p.send({
+            url: url,
+            fileName: fileName,
+            width: width,
+            isMobile: !!isMobile,
+            userAgent: userAgent || 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1'
+        });
+        ctx.response.body = app.responseMessage.successMessage({
+            key: key
+        });
+    });
+    router.post('/getSnapshotImg', async (ctx, next) => {
+        let key = ctx.request.body.key;
+        try {
+            let result = await snapshotService.getSnapshot(key);
+            result = JSON.parse(JSON.stringify(result));
+            if (result) {
+                //生成失败
+                if (result.img_flag === 1) {
+                    ctx.response.body = app.responseMessage.errorMessage({
+                        errCode: 2,
+                        msg: '截图生成失败，请确保网址正确！'
+                    });
+                }
+                //这是一个feature
+                //被清理
+                else if (result.img_flag === 2) {
+                    ctx.response.body = app.responseMessage.errorMessage({
+                        errCode: 3,
+                        msg: '截图已被过期清理！'
+                    });
+                }
+                //正常生成
+                else {
+                    ctx.response.body = app.responseMessage.successMessage({
+                        url: result.preview_url
+                    });
+                }
+            }
+            else {
+                ctx.response.body = app.responseMessage.errorMessage({
+                    msg: "未找到图片"
+                });
+            }
+        }
+        catch (err) {
+            console.log(err);
+            ctx.response.body = app.responseMessage.errorMessage({
+                msg: "未找到图片"
+            });
+        }
+    });
+    app.use(router.routes(), router.allowedMethods());
+}
+exports.default = default_1;
+//# sourceMappingURL=snapshot.js.map

@@ -1,1 +1,69 @@
-"use strict";var _interopRequireDefault=require("@babel/runtime/helpers/interopRequireDefault"),_regenerator=_interopRequireDefault(require("@babel/runtime/regenerator")),_asyncToGenerator2=_interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));Object.defineProperty(exports,"__esModule",{value:!0});var puppeteer=require("puppeteer"),config_1=require("../config"),imgUrl="".concat(config_1.default.STATIC.dir,"/").concat(config_1.default.DIR.cacheDir);process.on("message",function(){var r=(0,_asyncToGenerator2.default)(_regenerator.default.mark(function e(r){var t,n,i;return _regenerator.default.wrap(function(e){for(;;)switch(e.prev=e.next){case 0:return setTimeout(function(){process.send({flag:!1,err:"err"}),process.exit(0)},3e5),e.next=4,puppeteer.launch();case 4:return t=e.sent,e.prev=5,e.next=8,t.newPage();case 8:return n=e.sent,e.next=11,n.setViewport({width:r.width||375,height:812,deviceScaleFactor:2,isMobile:r.isMobile});case 11:return e.next=13,n.setUserAgent(r.userAgent);case 13:return e.next=15,n.goto(r.url,{timeout:12e4,waitUntil:"networkidle0"});case 15:return e.next=17,n.$$eval("body",function(e){return e[0].scrollHeight});case 17:return i=e.sent,e.next=20,n.setViewport({width:r.width||375,height:i,deviceScaleFactor:2,isMobile:r.isMobile});case 20:return e.next=22,n.goto(r.url,{timeout:12e4,waitUntil:"networkidle0"});case 22:return e.next=25,new Promise(function(e){setTimeout(function(){e()},3e3)});case 25:return e.next=27,n.screenshot({path:"".concat(imgUrl,"/").concat(r.fileName),type:"png",fullPage:!0});case 27:process.send({flag:!0}),process.exit(0),e.next=36;break;case 31:e.prev=31,e.t0=e.catch(5),process.send({flag:!1,err:e.t0}),process.exit(0);case 36:return e.next=38,t.close();case 38:case"end":return e.stop()}},e,null,[[5,31]])}));return function(e){return r.apply(this,arguments)}}());
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const puppeteer = require("puppeteer");
+const config_1 = require("../config");
+const imgUrl = `${config_1.default.STATIC.dir}/${config_1.default.DIR.cacheDir}`;
+process.on('message', async (m) => {
+    setTimeout(() => {
+        //300秒后进程自动释放
+        process.send({
+            flag: false,
+            err: 'err'
+        });
+        process.exit(0);
+    }, 300000);
+    console.log(m);
+    const browser = await puppeteer.launch();
+    try {
+        const page = await browser.newPage();
+        await page.setViewport({
+            width: m.width || 375,
+            height: 812,
+            deviceScaleFactor: 2,
+            isMobile: m.isMobile
+        });
+        await page.setUserAgent(m.userAgent);
+        await page.goto(m.url, {
+            timeout: 120000,
+            waitUntil: 'networkidle0'
+        });
+        const height = await page.$$eval('body', el => el[0].scrollHeight);
+        await page.setViewport({
+            width: m.width || 375,
+            height: height,
+            deviceScaleFactor: 2,
+            isMobile: m.isMobile
+        });
+        await page.goto(m.url, {
+            timeout: 120000,
+            waitUntil: 'networkidle0'
+        });
+        console.log("等待渲染...");
+        //等待三秒，目的是让页面有时间渲染完成
+        await new Promise((resolve) => {
+            setTimeout(() => {
+                console.log("ok...");
+                resolve();
+            }, 3000);
+        });
+        await page.screenshot({
+            path: `${imgUrl}/${m.fileName}`,
+            type: 'png',
+            fullPage: true,
+        });
+        process.send({
+            flag: true
+        });
+        process.exit(0);
+    }
+    catch (err) {
+        console.log(err);
+        process.send({
+            flag: false,
+            err: err
+        });
+        process.exit(0);
+    }
+    await browser.close();
+});
+//# sourceMappingURL=createSnapshot.js.map

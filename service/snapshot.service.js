@@ -1,1 +1,26 @@
-"use strict";var _interopRequireDefault=require("@babel/runtime/helpers/interopRequireDefault"),_classCallCheck2=_interopRequireDefault(require("@babel/runtime/helpers/classCallCheck")),_createClass2=_interopRequireDefault(require("@babel/runtime/helpers/createClass"));Object.defineProperty(exports,"__esModule",{value:!0});var SnapshotService=function(){function r(e){var t=this;(0,_classCallCheck2.default)(this,r),this.createSnapshot=function(e){return t.app.sequelize.models.Image.create(e)},this.app=e}return(0,_createClass2.default)(r,[{key:"deleteSnapshot",value:function(e){return this.app.sequelize.models.Image.destroy({where:{id:e}})}},{key:"getSnapshot",value:function(e){return this.app.sequelize.models.Image.findOne({where:{id:e}})}}]),r}();exports.default=SnapshotService;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class SnapshotService {
+    constructor(app) {
+        this.createSnapshot = (data) => {
+            return this.app.sequelize.models.Image.create(data);
+        };
+        this.app = app;
+    }
+    deleteSnapshot(id) {
+        return this.app.sequelize.models.Image.destroy({
+            where: {
+                id: id
+            }
+        });
+    }
+    getSnapshot(id) {
+        return this.app.sequelize.models.Image.findOne({
+            where: {
+                id: id
+            }
+        });
+    }
+}
+exports.default = SnapshotService;
+//# sourceMappingURL=snapshot.service.js.map
