@@ -37,11 +37,11 @@
       sendAjax('/snapshot/getSnapshot', 'POST', 'json', {
         isMobile: true,
         url: url,
-        userAgent: "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3882.0 Mobile Safari/537.36",
+        // userAgent: "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3882.0 Mobile Safari/537.36",
         userData: ``,
-        width: 375
-          // width:800,
-          // userAgent:`Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36`
+        // width: 375,
+        width: 1920,
+        userAgent: `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36`
       }).done(function (data) {
         if (!data.errCode) {
           getImgUrl(data.key)
@@ -70,17 +70,15 @@
           snapCheck = false
           $("#preview").empty()
         }
-        if(data.errCode === 2){
+        if (data.errCode === 2) {
           alert("截图生成失败，请确保网址正确！")
           snapCheck = false
           $("#preview").empty()
-        }
-        else if(data.errCode === 3){
+        } else if (data.errCode === 3) {
           alert("截图已被过期清理！")
           snapCheck = false
           $("#preview").empty()
-        }
-        else{
+        } else {
           postCount++
           if (postCount > 60) {
             snapCheck = false
