@@ -62,5 +62,6 @@ typings/
 
 .idea
 dist
-public
+cache_img
+files
 .DS_Store
