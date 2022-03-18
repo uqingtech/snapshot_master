@@ -13,6 +13,7 @@
 <div>
     <input id="shotUrl" type="text" value="https://baidu.com" placeholder="请输入快照的网址">
     <button onclick="shot(document.getElementById('shotUrl').value)">生成快照</button>
+    <button onclick="shot2(document.getElementById('shotUrl').value)">生成快照2</button>
 </div>
 
 <div id="preview">
@@ -54,6 +55,39 @@
         alert("请求失败！")
         snapCheck = false
         $("#preview").empty()
+      })
+    }
+  }
+
+  function shot2(url) {
+    // if (snapCheck) {
+      // alert("请不要频繁点击！")
+      // return false
+    // }
+    // snapCheck = true
+    $("#preview").empty()
+    $("#preview").html('截屏生成中...')
+    if (url.indexOf('http://') || url.indexOf('https://')) {
+      sendAjax('/snapshot/getSnapshotV2', 'POST', 'json', {
+        isMobile: true,
+        url: url,
+        // userAgent: "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3882.0 Mobile Safari/537.36",
+        userData: ``,
+        // width: 375,
+        width: 1920,
+        userAgent: `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36`
+      }).done(function (data) {
+        // if (!data.errCode) {
+        //   getImgUrl(data.key)
+        // } else {
+        //   alert("请求失败！")
+        //   snapCheck = false
+        //   $("#preview").empty()
+        // }
+      }).fail(function (err) {
+        alert("请求失败！")
+        snapCheck = false
+        // $("#preview").empty()
       })
     }
   }
