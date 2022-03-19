@@ -1,1 +1,32 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});class SnapshotService{constructor(e){this.createSnapshot=e=>this.app.sequelize.models.Image.create(e),this.updateSnapshot=(e,t)=>this.app.sequelize.models.Image.update(e,{where:{id:t}}),this.app=e}deleteSnapshot(e){return this.app.sequelize.models.Image.destroy({where:{id:e}})}getSnapshot(e){return this.app.sequelize.models.Image.findOne({where:{id:e}})}}exports.default=SnapshotService;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class SnapshotService {
+    constructor(app) {
+        this.createSnapshot = (data) => {
+            return this.app.sequelize.models.Image.create(data);
+        };
+        this.updateSnapshot = (data, id) => {
+            return this.app.sequelize.models.Image.update(data, {
+                where: {
+                    id
+                }
+            });
+        };
+        this.app = app;
+    }
+    deleteSnapshot(id) {
+        return this.app.sequelize.models.Image.destroy({
+            where: {
+                id: id
+            }
+        });
+    }
+    getSnapshot(id) {
+        return this.app.sequelize.models.Image.findOne({
+            where: {
+                id: id
+            }
+        });
+    }
+}
+exports.default = SnapshotService;

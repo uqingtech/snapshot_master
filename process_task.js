@@ -1,1 +1,5 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});const task_1=require("./task");(0,task_1.createStaticDir)(),(0,task_1.clearStaticResource)();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const task_1 = require("./task");
+(0, task_1.createStaticDir)();
+(0, task_1.clearStaticResource)();
