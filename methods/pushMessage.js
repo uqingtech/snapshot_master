@@ -24,7 +24,7 @@ const pushMessage = (data, type) => {
                     value: '截长图'
                 },
             },
-            page: `/pages/preview/index?url=${encodeURI(encodeURIComponent(data.preview_url))}`
+            page: `/pages/preview/index?url=${encodeURI(encodeURIComponent(data.preview_url))}&key=${data.id}`
         })
     }).end((err, res) => {
         if (err) {
