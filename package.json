@@ -49,7 +49,7 @@
     "puppeteer": "^10.2.0",
     "reflect-metadata": "^0.1.13",
     "save-dev": "^0.0.1-security",
-    "sequelize": "6.6.2",
+    "sequelize": "6.28.2",
     "sequelize-typescript": "^2.1.0",
     "sharp": "^0.28.3",
     "superagent": "^7.1.1",
